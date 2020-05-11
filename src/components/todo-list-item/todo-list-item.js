@@ -15,6 +15,7 @@ export default class ToDoListItem extends Component {
       ClassNames += " important"
     }
 
+    
     return (
       <span className={ClassNames}>
         <span

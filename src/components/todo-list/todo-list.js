@@ -4,10 +4,16 @@ import "./todo-list.css"
 
 const TodoList = ({ todos, onDeleted, onToggleDone, onToggleImportant }) => {
     const elements = todos.map(item => {
-        const { id, ...itemProps } = item;
+        const { id, show, ...itemProps } = item;
+
+        let ClassNames = "list-group-item";
+
+        if(!show) {
+            ClassNames += " display-none"
+        }
 
         return (
-            <li key={id} className="list-group-item">
+            <li key={id} className={ClassNames}>
                 <ToDoListItem {...itemProps} 
                 onDeleted={() => onDeleted(id)}
                 onToggleDone={() => onToggleDone(id)}
