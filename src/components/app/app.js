@@ -19,7 +19,8 @@ export default class App extends Component {
             this.createData("Create Awesome App"),
             this.createData("Have a luanch")
         ],
-        term: ""
+        term: "",
+        filter: "all"
     };
 
     createData(label) {
@@ -96,39 +97,8 @@ export default class App extends Component {
         this.setState( {term})
     }
 
-    SelectTypeItems = (filterType) => {
-        this.setState(( {todoData} ) => {
-            let newArr = [...todoData];
-            
-            if(filterType === "All"){
-                newArr.forEach((el) => el.show = true)
-            }
-
-            if(filterType === "Active"){
-                newArr.forEach((el) => {
-                    if(!el.done){
-                        el.show = true
-                    }else{
-                        el.show = false
-                    }
-                })
-            }
-
-            if(filterType === "Done") {
-                newArr.forEach((el) => {
-                    if(el.done){
-                        el.show = true
-                    }else{
-                        el.show = false
-                    }
-                })
-            }
-
-            return {
-                todoData: newArr
-            }
-        
-        })
+    onFilterItems = (filter) => {
+        this.setState( {filter} )
     }
 
     search = (arr, term) => {
@@ -141,19 +111,28 @@ export default class App extends Component {
         })
     }
 
+    filter = (items, filter) => {
+        switch (filter)  {
+            case "all": return items;
+            case "active": return items.filter(item => !item.done);
+            case "done": return items.filter(item => item.done);
+            default: return items;
+        }
+    }
+
 render() {
-    const {todoData, term} = this.state;
+    const {todoData, term, filter} = this.state;
     const doneCount = todoData.filter( (el) => el.done).length;
     const todoCount = todoData.length - doneCount;
 
-    let visibleItems = this.search(todoData, term);
+    let visibleItems = this.filter(this.search(todoData, term), filter);
 
     return (
         <div className="todo-app">
             <AppHeader toDo={todoCount} done={doneCount} />
             <div className="top-panel d-flex">
                 <SearchPanel onSearch={this.onSearch}/>
-                <ItemStatusFilter SelectTypeItems={this.SelectTypeItems} />
+                <ItemStatusFilter onFilterItems={this.onFilterItems} filter={filter}/>
             </div>
             
             <TodoList 
